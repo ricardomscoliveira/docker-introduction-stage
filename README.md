@@ -1,2 +1,2 @@
 # projects
-ITCenter Works 20
+ITCenter Works 20 minutes
