@@ -1,15 +1,24 @@
-FROM node:6-alpine
+# Use an official Node.js runtime as a parent image
+FROM node:20-alpine3.17
 
-EXPOSE 3000
 
-RUN apk add --update tini
+# Install PostgreSQL client and tini
+RUN apk add --update postgresql-client tini
 
-RUN mkdir -p /usr/src/app
-
+# Create and set the working directory inside the container
 WORKDIR /usr/src/app
 
-RUN npm install && npm cache clean
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-COPY . .
+# Install Node.js dependencies
+RUN npm install
 
-CMD [ "tini", "--", "node", "./bin/www" ]
+# Install and enable pg_trgm extension in PostgreSQL
+RUN apk add --no-cache postgresql-contrib
+
+# Expose the port your app runs on
+EXPOSE 3000
+
+# Define the command to run your application
+CMD ["node", "app.js"]
